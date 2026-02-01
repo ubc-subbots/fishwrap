@@ -1,0 +1,15 @@
+services:
+  olivetin:
+    container_name: olivetin
+    image: jamesread/olivetin
+    volumes:
+      - ./olivetin/config:/config
+    ports:
+      - "80:1337"
+    restart: unless-stopped
+
+  lichtblick:
+    image: ghcr.io/lichtblick-suite/lichtblick:latest
+    ports:
+      - "8080:8080" 
+    restart: unless-stopped

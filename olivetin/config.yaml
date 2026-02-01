@@ -1,0 +1,54 @@
+listenAddressSingleHTTPFrontend: 0.0.0.0:1337
+logLevel: "INFO"
+insecureAllowDumpSos: true
+
+actions:
+  - title: Reboot Robot
+    shell: ssh subbots@172.17.0.1 'sudo reboot'
+    icon: restart
+    popupOnStart: default
+    arguments:
+      - type: confirmation
+        title: Confirm?
+  
+  - title: Shutdown Robot
+    shell: ssh subbots@172.17.0.1 'sudo shutdown 0'
+    icon: "&#9888;"
+    popupOnStart: default
+    arguments:
+      - type: confirmation
+        title: Confirm?
+  
+  - title: Kill and Delete ROS Container
+    shell: ssh subbots@172.17.0.1 'docker stop steelhead-sbc; sleep 3; docker rm steelhead-sbc'
+    icon: "&#9940;"
+    popupOnStart: execution-dialog
+    arguments:
+      - type: confirmation
+        title: Confirm?
+
+  - title: Download latest ROS Container
+    shell: ssh subbots@172.17.0.1 'docker pull ghcr.io/ubc-subbots/steelhead-sbc:1.1.0'
+    icon: "&#128259;"
+    popupOnStart: execution-dialog
+
+  - title: Start ROS Container
+    shell: echo "Work in Progress!!"
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+  
+  - title: Ping Internet
+    shell: ping -c 4 1.0.0.1
+    icon: ping
+    popupOnStart: execution-dialog-stdout-only
+  
+  - title: Ping Router
+    shell: ping -c 4 10.42.0.1
+    icon: ping
+    popupOnStart: execution-dialog-stdout-only
+
+  - title: Get Network Config
+    shell: ssh subbots@172.17.0.1 'ip a'
+    icon: "&#128732;"
+    popupOnStart: execution-dialog-stdout-only
+  
