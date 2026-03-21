@@ -30,7 +30,7 @@ actions:
   - title: Download latest ROS Container
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker pull ghcr.io/ubc-subbots/steelhead-sbc:latest'
     icon: "&#128259;"
-    timeout: 60
+    timeout: 1200
     popupOnStart: execution-dialog
 
   - title: Start Steelhead ROS Container
@@ -50,7 +50,7 @@ actions:
           tail -f /dev/null
       '
     icon: "&#9989;"
-    timeout: 20
+    timeout: 60
     popupOnStart: execution-dialog
 
   - title: Steelhead Container Initialize Listeners and Topics
@@ -60,7 +60,7 @@ actions:
           ros2 launch steelhead_bringup pool_test_ssh_teleop_launch.py
         "'
     icon: "&#9989;"
-    timeout: 10
+    timeout: 40
     popupOnStart: execution-dialog
   
   - title: Steelhead Container One-click Launch
@@ -70,7 +70,7 @@ actions:
           ros2 launch steelhead_bringup pool_test_hardcode_launch.py
         "'
     icon: "&#9989;"
-    timeout: 10
+    timeout: 40
     popupOnStart: execution-dialog
 
   - title: Steelhead Container All-thruster Test
@@ -80,7 +80,7 @@ actions:
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100011000110001100011000110001\"
         "'
     icon: "&#9989;"
-    timeout: 10
+    timeout: 40
     popupOnStart: execution-dialog
 
   - title: Steelhead Container All-thruster stop
@@ -90,7 +90,7 @@ actions:
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100001000010000100001000010000\"
         "'
     icon: "&#9989;"
-    timeout: 10
+    timeout: 40
     popupOnStart: execution-dialog
   
   - title: Ping Internet
