@@ -1,0 +1,106 @@
+listenAddressSingleHTTPFrontend: 0.0.0.0:1337
+logLevel: "INFO"
+insecureAllowDumpSos: true
+
+actions:
+  - title: Reboot Robot
+    shell: ssh subbots@172.17.0.1 'sudo reboot'
+    icon: restart
+    popupOnStart: default
+    arguments:
+      - type: confirmation
+        title: Confirm?
+  
+  - title: Shutdown Robot
+    shell: ssh subbots@172.17.0.1 'sudo shutdown 0'
+    icon: "&#9888;"
+    popupOnStart: default
+    arguments:
+      - type: confirmation
+        title: Confirm?
+  
+  - title: Kill and Delete ROS Container
+    shell: ssh subbots@172.17.0.1 'docker rm -f steelhead-sbc'
+    icon: "&#9940;"
+    popupOnStart: execution-dialog
+    arguments:
+      - type: confirmation
+        title: Confirm?
+
+  - title: Download latest ROS Container
+    shell: ssh subbots@172.17.0.1 'docker pull ghcr.io/ubc-subbots/steelhead-sbc:latest'
+    icon: "&#128259;"
+    popupOnStart: execution-dialog
+
+  - title: Start Steelhead ROS Container
+    shell: |
+      #!/bin/bash
+      ssh subbots@172.17.0.1 '
+        if sudo docker ps --format "{{.Names}}" | grep -q "^steelhead$"; then
+          echo "Container already running."
+          exit 0
+        fi
+        sudo docker run -d \
+          --name steelhead-sbc \
+          --net=host \
+          -v /dev:/dev \
+          --privileged \
+          ghcr.io/ubc-subbots/steelhead-sbc \
+          tail -f /dev/null
+      '
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+
+  - title: Steelhead Container Initialize Listeners and Topics
+    shell: |
+        ssh subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+          source /root/steelhead/install/setup.bash &&
+          ros2 launch steelhead_bringup pool_test_ssh_teleop_launch.py
+        "'
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+  
+  - title: Steelhead Container One-click Launch
+    shell: |
+        ssh subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+          source /root/steelhead/install/setup.bash &&
+          ros2 launch steelhead_bringup pool_test_hardcode_launch.py
+        "'
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+
+  - title: Steelhead Container All-thruster Test
+    shell: |
+        ssh subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+          source /root/steelhead/install/setup.bash &&
+          ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100011000110001100011000110001\"
+        "'
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+
+  - title: Steelhead Container All-thruster stop
+    shell: |
+        ssh subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+          source /root/steelhead/install/setup.bash &&
+          ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100001000010000100001000010000\"
+        "'
+    icon: "&#9989;"
+    popupOnStart: execution-dialog
+  
+  - title: Ping Internet
+    shell: ping -c 4 1.0.0.1
+    timeout: 5
+    icon: ping
+    popupOnStart: execution-dialog-stdout-only
+  
+  - title: Ping Router
+    shell: ping -c 4 10.42.0.1
+    timeout: 5
+    icon: ping
+    popupOnStart: execution-dialog-stdout-only
+
+  - title: Get Container Network Config
+    shell: ssh subbots@172.17.0.1 'ip a'
+    icon: "&#128732;"
+    popupOnStart: execution-dialog-stdout-only
+  
