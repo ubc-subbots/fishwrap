@@ -37,7 +37,7 @@ actions:
     shell: |
       #!/bin/bash
       ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '
-        if sudo docker ps --filter "name=^steelhead$" --filter "status=running" --quiet | grep -q "^steelhead$"; then
+        if sudo docker ps --filter "name=^steelhead-sbc$" --filter "status=running" --quiet | grep -q "^steelhead-sbc$"; then
           echo "Container already running."
           exit 0
         fi
