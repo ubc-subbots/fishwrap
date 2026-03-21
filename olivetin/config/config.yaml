@@ -37,7 +37,7 @@ actions:
     shell: |
       #!/bin/bash
       ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '
-        if sudo docker ps --format "{{.Names}}" | grep -q "^steelhead$"; then
+        if sudo docker ps --filter "name=^steelhead$" --filter "status=running" --quiet | grep -q "^steelhead$"; then
           echo "Container already running."
           exit 0
         fi
@@ -55,7 +55,7 @@ actions:
 
   - title: Steelhead Container Initialize Listeners and Topics
     shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
           ros2 launch steelhead_bringup pool_test_ssh_teleop_launch.py
         "'
@@ -65,7 +65,7 @@ actions:
   
   - title: Steelhead Container One-click Launch
     shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
           ros2 launch steelhead_bringup pool_test_hardcode_launch.py
         "'
@@ -75,7 +75,7 @@ actions:
 
   - title: Steelhead Container All-thruster Test
     shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100011000110001100011000110001\"
         "'
@@ -85,7 +85,7 @@ actions:
 
   - title: Steelhead Container All-thruster stop
     shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead bash -lc "
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100001000010000100001000010000\"
         "'
