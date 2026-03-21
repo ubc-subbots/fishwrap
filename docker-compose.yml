@@ -4,11 +4,13 @@ services:
     image: jamesread/olivetin
     volumes:
       - ./olivetin/config:/config
+      - ./olivetin/keys:/home/olivetin/.ssh
     ports:
       - "80:1337"
     restart: unless-stopped
 
   lichtblick:
+    container_name: lichtblick
     image: ghcr.io/lichtblick-suite/lichtblick:latest
     ports:
       - "8080:8080"
