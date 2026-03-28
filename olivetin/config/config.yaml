@@ -18,7 +18,7 @@ actions:
     arguments:
       - type: confirmation
         title: Confirm?
-  
+
   - title: Kill and Delete ROS Container
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker rm -f steelhead-sbc'
     icon: "&#9940;"
@@ -26,6 +26,16 @@ actions:
     arguments:
       - type: confirmation
         title: Confirm?
+
+  - title: List Docker Containers
+    shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker ps -a'
+    icon: "&#128044;"
+    popupOnStart: execution-dialog
+
+  - title: List Docker Images
+    shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker image ls'
+    icon: "&#128044;"
+    popupOnStart: execution-dialog
 
   - title: Download latest ROS Container
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker pull ghcr.io/ubc-subbots/steelhead-sbc:latest'
@@ -37,7 +47,7 @@ actions:
     shell: |
       #!/bin/bash
       ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '
-        if sudo docker ps --filter "name=^steelhead-sbc$" --filter "status=running" --quiet | grep -q "^steelhead-sbc$"; then
+        if [ -n "$(sudo docker ps --filter 'name=^steelhead-sbc$' --filter 'status=running' --quiet)" ]; then
           echo "Container already running."
           exit 0
         fi
@@ -52,6 +62,17 @@ actions:
     icon: "&#9989;"
     timeout: 60
     popupOnStart: execution-dialog
+
+  - title: Start Rosbridge WebSocket in Steelhead container
+    shell: |
+      ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
+        source /root/steelhead/install/setup.bash &&
+        ros2 launch rosbridge_server rosbridge_websocket_launch.xml
+      "'
+    icon: "&#128268;"
+    timeout: 15
+    popupOnStart: execution-dialog
+
 
   - title: Steelhead Container Initialize Listeners and Topics
     shell: |
@@ -95,13 +116,13 @@ actions:
   
   - title: Ping Internet
     shell: ping -c 4 1.0.0.1
-    timeout: 5
+    timeout: 8
     icon: ping
     popupOnStart: execution-dialog-stdout-only
   
   - title: Ping Router
-    shell: ping -c 4 10.42.0.1
-    timeout: 5
+    shell: ping -c 4 10.42.0.2
+    timeout: 8
     icon: ping
     popupOnStart: execution-dialog-stdout-only
 
