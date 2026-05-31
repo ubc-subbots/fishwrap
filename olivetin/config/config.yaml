@@ -13,7 +13,7 @@ actions:
   
   - title: Shutdown Robot
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo shutdown 0'
-    icon: "&#9888;"
+    icon: "&#128680;"
     popupOnStart: default
     arguments:
       - type: confirmation
@@ -29,12 +29,12 @@ actions:
 
   - title: List Docker Containers
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker ps -a'
-    icon: "&#128044;"
+    icon: "&#128230;"
     popupOnStart: execution-dialog
 
   - title: List Docker Images
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'docker image ls'
-    icon: "&#128044;"
+    icon: "&#128230;"
     popupOnStart: execution-dialog
 
   - title: Download latest ROS Container
@@ -59,7 +59,7 @@ actions:
           ghcr.io/ubc-subbots/steelhead-sbc \
           tail -f /dev/null
       '
-    icon: "&#9989;"
+    icon: "&#128640;"
     timeout: 60
     popupOnStart: execution-dialog
 
@@ -80,8 +80,36 @@ actions:
           source /root/steelhead/install/setup.bash &&
           ros2 launch steelhead_bringup pool_test_base_launch.py
         "'
-    icon: "&#9989;"
+    icon: "&#128161;"
     timeout: 40
+    popupOnStart: execution-dialog
+
+  - title: Configure on-boot routine auto launch
+    shell: |
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo systemctl {{ newStatus }} steelhead-autolaunch.service --no-pager
+        '
+    icon: "&#128295;"
+    timeout: 5
+    arguments:
+      - name: Action
+        description: Choose what you want.
+        choices:
+          - title: Enable
+            value: enable
+
+          - title: Disable
+            value: disable
+
+          - title: Query Status
+            value: status
+    popupOnStart: execution-dialog
+
+  - title: Run auto launch NOW
+    shell: |
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '/usr/local/bin/steelhead-autolaunch.sh
+        '
+    icon: "&#129349;"
+    timeout: 30
     popupOnStart: execution-dialog
   
   - title: Steelhead Container One-click Launch
@@ -100,7 +128,7 @@ actions:
           source /root/steelhead/install/setup.bash &&
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100011000110001100011000110001\"
         "'
-    icon: "&#9989;"
+    icon: "&#127946;"
     timeout: 40
     popupOnStart: execution-dialog
 
@@ -110,7 +138,7 @@ actions:
           source /root/steelhead/install/setup.bash &&
           ros2 topic pub /motor_control std_msgs/msg/UInt32 \"data: 0b00100001000010000100001000010000\"
         "'
-    icon: "&#9989;"
+    icon: "&#128721;"
     timeout: 40
     popupOnStart: execution-dialog
   
