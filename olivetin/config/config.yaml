@@ -88,15 +88,15 @@ actions:
     icon: "&#128736;"
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sed -Ei "
-          /ros2/c\  ros2 launch {{ PACKAGE }} {{ LAUNCHFILE }}" 
-          /home/subbots/fishwrap/olivetin/autostart.sh'
-    type: ascii_identifier
+          /ros2/c\  ros2 launch {{ PACKAGE }} {{ LAUNCHFILE }}" /home/subbots/fishwrap/olivetin/autostart.sh'
     arguments:
       - name: PACKAGE
+        type: ascii_identifier
         title: Package name
         suggestions:
           - steelhead_bringup:
       - name: LAUNCHFILE
+        type: ascii_identifier
         title: Launchfile name
         suggestions:
           - pool_test_hardcode_launch.py:
