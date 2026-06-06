@@ -118,7 +118,7 @@ actions:
             value: disable
 
           - title: Query Status
-            value: status
+            value: is-enabled
     popupOnStart: execution-dialog
 
   - title: Run on-boot auto launch NOW
