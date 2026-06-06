@@ -88,14 +88,14 @@ actions:
     icon: "&#128736;"
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sed -Ei "
-          /ros2/c\  ros2 launch {{ ROS_PACKAGE }} {{ ROS_LAUNCHFILE }}" 
+          /ros2/c\  ros2 launch {{ PACKAGE }} {{ LAUNCHFILE }}" 
           /home/subbots/fishwrap/olivetin/autostart.sh'
     arguments:
-      - name: ROS_PACKAGE
+      - name: PACKAGE
         title: Package name
         suggestions:
           - steelhead_bringup:
-      - name: ROS_LAUNCHFILE
+      - name: LAUNCHFILE
         title: Launchfile name
         suggestions:
           - pool_test_hardcode_launch.py:
@@ -105,9 +105,9 @@ actions:
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo systemctl {{ newStatus }} steelhead-autolaunch.service --no-pager
         '
     icon: "&#128295;"
-    timeout: 5
+    timeout: 10
     arguments:
-      - name: Action
+      - name: newStatus
         description: What to do to on-boot routine?
         choices:
           - title: Enable
