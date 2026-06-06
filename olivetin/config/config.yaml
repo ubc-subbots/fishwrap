@@ -90,6 +90,7 @@ actions:
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sed -Ei "
           /ros2/c\  ros2 launch {{ PACKAGE }} {{ LAUNCHFILE }}" 
           /home/subbots/fishwrap/olivetin/autostart.sh'
+    type: ascii_identifier
     arguments:
       - name: PACKAGE
         title: Package name
