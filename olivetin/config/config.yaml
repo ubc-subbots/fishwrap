@@ -84,7 +84,23 @@ actions:
     timeout: 40
     popupOnStart: execution-dialog
 
-  - title: Configure on-boot routine auto launch
+  - title: Configure on-boot launch file
+    icon: "&#128736;"
+    shell: |
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sed -Ei "
+          /ros2/c\  ros2 launch {{ ROS_PACKAGE }} {{ ROS_LAUNCHFILE }}" 
+          /home/subbots/fishwrap/olivetin/autostart.sh'
+    arguments:
+      - name: ROS_PACKAGE
+        title: Package name
+        suggestions:
+          - steelhead_bringup:
+      - name: ROS_LAUNCHFILE
+        title: Launchfile name
+        suggestions:
+          - pool_test_hardcode_launch.py:
+
+  - title: Enable/Disable on-boot routine auto launch
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo systemctl {{ newStatus }} steelhead-autolaunch.service --no-pager
         '
@@ -92,7 +108,7 @@ actions:
     timeout: 5
     arguments:
       - name: Action
-        description: Choose what you want.
+        description: What to do to on-boot routine?
         choices:
           - title: Enable
             value: enable
@@ -104,9 +120,9 @@ actions:
             value: status
     popupOnStart: execution-dialog
 
-  - title: Run auto launch NOW
+  - title: Run on-boot auto launch NOW
     shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '/usr/local/bin/steelhead-autolaunch.sh
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '/home/subbots/fishwrap/olivetin/autostart.sh
         '
     icon: "&#129349;"
     timeout: 30
@@ -144,13 +160,13 @@ actions:
   
   - title: Ping Internet
     shell: ping -c 4 1.0.0.1
-    timeout: 8
+    timeout: 15
     icon: ping
     popupOnStart: execution-dialog-stdout-only
   
   - title: Ping Router
     shell: ping -c 4 10.42.0.2
-    timeout: 8
+    timeout: 15
     icon: ping
     popupOnStart: execution-dialog-stdout-only
 
