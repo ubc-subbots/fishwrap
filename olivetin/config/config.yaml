@@ -1,6 +1,17 @@
 listenAddressSingleHTTPFrontend: 0.0.0.0:1337
 logLevel: "INFO"
 insecureAllowDumpSos: true
+logLevel: "INFO"
+showFooter: false
+sectionNavigationStyle: topbar
+
+additionalNavigationLinks:
+  - title: Lichtblick
+    url: http://10.42.0.3:8080
+    target: _blank
+  - title: Terminal
+    url: http://10.42.0.3:8182
+    target: _blank
 
 actions:
   - title: Reboot Robot

@@ -15,3 +15,10 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+  sshwifty:
+    container_name: sshwifty
+    image: niruix/sshwifty:latest
+    ports:
+      - "8182:8182"
+    restart: unless-stopped
