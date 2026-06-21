@@ -1,20 +1,13 @@
 listenAddressSingleHTTPFrontend: 0.0.0.0:1337
 logLevel: "INFO"
+pageTitle: fishwrap
 insecureAllowDumpSos: true
-logLevel: "INFO"
 showFooter: false
 sectionNavigationStyle: topbar
-
-additionalNavigationLinks:
-  - title: Lichtblick
-    url: http://10.42.0.3:8080
-    target: _blank
-  - title: Terminal
-    url: http://10.42.0.3:8182
-    target: _blank
+showNavigation: false
 
 actions:
-  - title: Reboot Robot
+  - title: Reboot Robot Computer
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo reboot'
     icon: restart
     popupOnStart: default
@@ -22,7 +15,7 @@ actions:
       - type: confirmation
         title: Confirm?
   
-  - title: Shutdown Robot
+  - title: Shutdown Robot Computer
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo shutdown 0'
     icon: "&#128680;"
     popupOnStart: default
@@ -54,7 +47,7 @@ actions:
     timeout: 1200
     popupOnStart: execution-dialog
 
-  - title: Start Steelhead ROS Container
+  - title: Start ROS Container
     shell: |
       #!/bin/bash
       ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '
@@ -74,7 +67,7 @@ actions:
     timeout: 60
     popupOnStart: execution-dialog
 
-  - title: Start Rosbridge WebSocket in Steelhead container
+  - title: Start Rosbridge WebSocket
     shell: |
       ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
         source /root/steelhead/install/setup.bash &&
@@ -84,8 +77,7 @@ actions:
     timeout: 15
     popupOnStart: execution-dialog
 
-
-  - title: Steelhead Container Initialize Listeners and Topics
+  - title: Initialize Listeners and Topics
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
@@ -95,7 +87,52 @@ actions:
     timeout: 40
     popupOnStart: execution-dialog
 
-  - title: Configure on-boot launch file
+  - title: Configure PID Controller Parameters
+    shell: |
+        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
+          source /root/steelhead/install/setup.bash &&
+          ros2 param set /steelhead/controls/steelhead_pid_controller force_{{ dimension }}_{{ element }} {{ value }}
+        "'
+    icon: "&#128295;"
+    timeout: 40
+    arguments:
+      - name: dimension
+        description: Choose dimension
+        choices:
+          - title: X
+            value: x
+
+          - title: Y
+            value: y
+
+          - title: Z
+            value: z
+
+          - title: Pitch
+            value: pitch
+
+          - title: Roll
+            value: roll
+
+          - title: Yaw
+            value: yaw
+      - name: element
+        description: Choose Element - Proportional (P), Integral (I), Derivative (D)
+        choices:
+          - title: Proportional (P)
+            value: p
+
+          - title: Integral (I)
+            value: i
+
+          - title: Derivative (D)
+            value: d
+      - name: value
+        default: "0.0"
+        type: ascii_sentence
+    popupOnStart: execution-dialog
+
+  - title: Configure autorun launch file
     icon: "&#128736;"
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sed -Ei "
@@ -112,7 +149,7 @@ actions:
         suggestions:
           - pool_test_hardcode_launch.py:
 
-  - title: Enable/Disable on-boot routine auto launch
+  - title: Enable/Disable - Autorun ROS launch file on computer bootup
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo systemctl {{ newStatus }} steelhead-autolaunch.service --no-pager
         '
@@ -132,25 +169,15 @@ actions:
             value: is-enabled
     popupOnStart: execution-dialog
 
-  - title: Run on-boot auto launch NOW
+  - title: Run autorun launch file NOW
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 '/home/subbots/fishwrap/olivetin/autostart.sh
         '
     icon: "&#129349;"
     timeout: 30
     popupOnStart: execution-dialog
-  
-  - title: Steelhead Container One-click Launch
-    shell: |
-        ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
-          source /root/steelhead/install/setup.bash &&
-          ros2 launch steelhead_bringup pool_test_hardcode_launch.py
-        "'
-    icon: "&#9989;"
-    timeout: 40
-    popupOnStart: execution-dialog
 
-  - title: Steelhead Container All-thruster Test
+  - title: All-thruster Test
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
@@ -160,7 +187,7 @@ actions:
     timeout: 40
     popupOnStart: execution-dialog
 
-  - title: Steelhead Container All-thruster stop
+  - title: All-thruster Stop
     shell: |
         ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'sudo docker exec -d steelhead-sbc bash -lc "
           source /root/steelhead/install/setup.bash &&
@@ -182,8 +209,54 @@ actions:
     icon: ping
     popupOnStart: execution-dialog-stdout-only
 
-  - title: Get Container Network Config
+  - title: Get Host Network Config
     shell: ssh -o StrictHostKeyChecking=no subbots@172.17.0.1 'ip a'
     icon: "&#128732;"
     popupOnStart: execution-dialog-stdout-only
   
+
+dashboards:
+  - title: Robot Dashboard
+    contents:
+      - title: 1. ROS Container Actions
+        type: fieldset
+        contents:
+          - title: Download latest ROS Container
+          - title: Kill and Delete ROS Container
+          - title: Start ROS Container
+          - title: Initialize Listeners and Topics
+          - title: Start Rosbridge WebSocket
+          - title: Configure autorun launch file
+          - title: Enable/Disable - Autorun ROS launch file on computer bootup
+          - title: Run autorun launch file NOW
+          - title: Configure PID Controller Parameters
+          - title: All-thruster Test
+          - title: All-thruster Stop
+      - title: 2. Computer Actions
+        type: fieldset
+        contents:
+          - title: List Docker Containers
+          - title: List Docker Images
+          - title: Ping Internet
+          - title: Ping Router
+          - title: Get Host Network Config
+      - title: 3. Links
+        type: fieldset
+        contents:
+          - type: display
+            title: |
+              <a href="http://10.42.0.3:81" target="_blank" rel="noopener noreferrer">Lichtblick (teleop and topic visualization) (Wi-Fi)</a>
+          - type: display
+            title: |
+              <a href="http://10.42.0.3:82/?hostname=10.42.0.3&username=subbots&password=c3ViYm90cw" target="_blank" rel="noopener noreferrer">Web Terminal (Wi-Fi)</a>
+          - type: display
+            title: |
+              <a href="http://10.42.0.4:81" target="_blank" rel="noopener noreferrer">Lichtblick (teleop and topic visualization) (Ethernet/Tether)</a>
+          - type: display
+            title: |
+              <a href="http://10.42.0.4:82/?hostname=10.42.0.4&username=subbots&password=c3ViYm90cw" target="_blank" rel="noopener noreferrer">Web Terminal (Ethernet/Tether)</a>
+      - title: 4. DANGER ZONE
+        type: fieldset
+        contents:
+          - title: Reboot Robot Computer
+          - title: Shutdown Robot Computer

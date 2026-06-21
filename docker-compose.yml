@@ -13,12 +13,11 @@ services:
     container_name: lichtblick
     image: ghcr.io/lichtblick-suite/lichtblick:latest
     ports:
-      - "8080:8080"
+      - "81:8080"
     restart: unless-stopped
 
-  sshwifty:
-    container_name: sshwifty
-    image: niruix/sshwifty:latest
+  webssh:
+    build: webssh
     ports:
-      - "8182:8182"
+      - "82:8888"
     restart: unless-stopped

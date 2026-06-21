@@ -1,0 +1,3 @@
+[submodule "webssh"]
+	path = webssh
+	url = https://github.com/huashengdun/webssh
