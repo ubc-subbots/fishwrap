@@ -128,6 +128,7 @@ actions:
           - title: Derivative (D)
             value: d
       - name: value
+        description: ONLY input a double (add .0 if it's a whole number) - otherwise it crashes the node!
         default: "0.0"
         type: ascii_sentence
     popupOnStart: execution-dialog
