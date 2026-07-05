@@ -97,7 +97,6 @@ actions:
     timeout: 40
     arguments:
       - name: dimension
-        description: Choose dimension
         choices:
           - title: X
             value: x
@@ -117,7 +116,6 @@ actions:
           - title: Yaw
             value: yaw
       - name: element
-        description: Choose Element - Proportional (P), Integral (I), Derivative (D)
         choices:
           - title: Proportional (P)
             value: p
